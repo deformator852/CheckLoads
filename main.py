@@ -1,5 +1,4 @@
 from selenium import webdriver
-from dotenv import load_dotenv
 from selenium.webdriver.firefox.options import Options
 from haully import Haully  # pyright:ignore
 import config
