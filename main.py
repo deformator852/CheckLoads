@@ -9,7 +9,7 @@ def main():
     options = Options()
     options.add_argument(config.USER_AGENT)
     options.add_argument("--disable-blink-features=AutomationControlled")
-    # options.add_argument('headless')
+    options.add_argument('headless')
     stop_event = threading.Event()
     options.add_argument("window-size=1920,1080")
     driver = webdriver.Firefox(options)
