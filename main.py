@@ -1,27 +1,30 @@
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from playwright.sync_api import sync_playwright
 from haully import Haully  # pyright:ignore
 import config
 import threading
 
 
 def main():
-    options = Options()
-    options.add_argument(config.USER_AGENT)
-    options.add_argument("--disable-blink-features=AutomationControlled")
-    options.add_argument('headless')
     stop_event = threading.Event()
-    options.add_argument("window-size=1920,1080")
-    driver = webdriver.Firefox(options)
-    haully = Haully(driver)
-    haully_thread = threading.Thread(target=haully.start("https://www.haully.com/"))
-    try:
-        haully_thread.start()
-    except Exception as e:
-        print(e)
-    finally:
-        stop_event.set()
-        driver.quit()
+
+    def run_haully(playwright):
+        browser = playwright.firefox.launch(headless=False)
+        context = browser.new_context(
+            user_agent=config.USER_AGENT, viewport={"width": 1920, "height": 1080}
+        )
+        page = context.new_page()
+        driver = page
+        haully = Haully(driver)
+        try:
+            haully.start("https://www.haully.com/")
+        except Exception as e:
+            print(e)
+        finally:
+            stop_event.set()
+            browser.close()
+
+    with sync_playwright() as playwright:
+        run_haully(playwright)
 
 
 if __name__ == "__main__":
