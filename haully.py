@@ -3,7 +3,7 @@ from bot import send_load
 from utils import export_price
 import config
 import time
-
+import web_selectors as selectors
 
 class Haully:
     def __init__(self, page: Page) -> None:
@@ -18,14 +18,8 @@ class Haully:
             self.__check_loads()
             time.sleep(300)
 
-    def __check_count_vehicle(self) -> int:
-        vehicles = (
-            self.page.wait_for_selector(
-                "div.src-hocs-withBackground__Background-light-gray--OlGgA:nth-child(3) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2)"
-            )
-            .inner_text()
-            .strip()
-        )
+    def __check_count_vehicles(self) -> int:
+        vehicles = self.page.wait_for_selector(selectors.VEHICLES).inner_text().strip()
         vehicle = vehicles[0]
         if vehicle.isdigit():
             return int(vehicle)
@@ -42,7 +36,7 @@ class Haully:
         if load_price >= filter_price:
             count_vehicle = 5
             try:
-                count_vehicle = self.__check_count_vehicle()
+                count_vehicle = self.__check_count_vehicles()
             except Exception as e:
                 print(e)
             if self.last_load_id != load_id and count_vehicle <= 6:
@@ -57,14 +51,14 @@ class Haully:
         )
         load_price = (
             self.page.query_selector(
-                "div.src-hocs-withBackground__Background-light-gray--OlGgA:nth-child(3) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)"
+              selectors.LOAD_PRICE 
             )
             .inner_text()
             .strip()
-        )
+        ).replace(",", "")
         load_id = (
             self.page.query_selector(
-                "div.src-hocs-withBackground__Background-light-gray--OlGgA:nth-child(3) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)"
+               selectors.LOAD_ID 
             )
             .inner_text()
             .strip()
@@ -72,18 +66,18 @@ class Haully:
         return {"price": load_price[1:-3], "id": load_id}
 
     def __go_to_search(self):
-        search_button_selector = ".src-containers-MainSearchForm__searchControlsSearch--1G1kF > button:nth-child(1)"
+        search_button_selector = selectors.SEARCH_BUTTON
         self.page.wait_for_selector(search_button_selector)
         time.sleep(2)
         self.page.click(search_button_selector)
         time.sleep(3)
 
     def __authorization(self):
-        login_button_selector = "div:nth-child(1) > div > button"
+        login_button_selector = selectors.LOGIN_BUTTON
         self.page.wait_for_selector(login_button_selector)
         self.page.click(login_button_selector)
 
-        form_selector = "#loginForm"
+        form_selector = selectors.FORM
         self.page.wait_for_selector(form_selector)
         email_field = self.page.query_selector("#email")
         password_field = self.page.query_selector("#password")
@@ -95,30 +89,30 @@ class Haully:
         self.page.click(login_button_selector)
 
 
-def main():
-    stop_event = threading.Event()
+# def main():
+#     stop_event = threading.Event()
+#
+#     def run_haully(playwright):
+#         browser = playwright.chromium.launch(headless=True)
+#         context = browser.new_context(
+#             user_agent=config.USER_AGENT, viewport={"width": 1920, "height": 1080}
+#         )
+#         page = context.new_page()
+#         haully = Haully(page)
+#         haully_thread = threading.Thread(
+#             target=haully.start, args=("https://www.haully.com/",)
+#         )
+#         try:
+#             haully_thread.start()
+#         except Exception as e:
+#             print(e)
+#         finally:
+#             stop_event.set()
+#             browser.close()
+#
+#     with sync_playwright() as playwright:
+#         run_haully(playwright)
 
-    def run_haully(playwright):
-        browser = playwright.chromium.launch(headless=True)
-        context = browser.new_context(
-            user_agent=config.USER_AGENT, viewport={"width": 1920, "height": 1080}
-        )
-        page = context.new_page()
-        haully = Haully(page)
-        haully_thread = threading.Thread(
-            target=haully.start, args=("https://www.haully.com/",)
-        )
-        try:
-            haully_thread.start()
-        except Exception as e:
-            print(e)
-        finally:
-            stop_event.set()
-            browser.close()
 
-    with sync_playwright() as playwright:
-        run_haully(playwright)
-
-
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
