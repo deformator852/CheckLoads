@@ -19,6 +19,7 @@ def main():
             haully.start("https://www.haully.com/")
         except Exception as e:
             print(e)
+            haully.start("https://www.haully.com/")
         finally:
             stop_event.set()
             browser.close()
