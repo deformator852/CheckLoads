@@ -11,11 +11,31 @@ class Haully:
         self.last_load_id = None
 
     def start(self, url):
-        self.page.goto(url)
-        self.__authorization()
-        self.__go_to_search()
+        try:
+          self.page.goto(url)
+        except:
+            time.sleep(4)
+            self.page.goto(url)
+            time.sleep(3)
+        try:
+          self.__authorization()
+        except:
+            time.sleep(4)
+            self.__authorization()
+            time.sleep(3)
+        try:
+          self.__go_to_search()
+        except:
+            time.sleep(4)
+            self.__go_to_search()
+            time.sleep(3)
         while True:
-            self.__check_loads()
+            try:
+              self.__check_loads()
+            except:
+                time.sleep(4)
+                self.__check_loads()
+                time.sleep(3)
             time.sleep(300)
 
     def __check_count_vehicles(self) -> int:
