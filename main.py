@@ -8,7 +8,7 @@ def main():
     stop_event = threading.Event()
 
     def run_haully(playwright):
-        browser = playwright.firefox.launch(headless=False)
+        browser = playwright.firefox.launch(headless=True)
         context = browser.new_context(
             user_agent=config.USER_AGENT, viewport={"width": 1920, "height": 1080}
         )
@@ -20,7 +20,7 @@ def main():
                 haully.start("https://www.haully.com/")
             except Exception as e:
                 print(e)
-
+                time.sleep(120)
         # stop_event.set()
         # browser.close()
 
