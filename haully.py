@@ -16,7 +16,10 @@ class Haully:
         self.__authorization()
         self.__go_to_search()
         while True:
-            self.__check_loads()
+            try:
+              self.__check_loads()
+            except Exception as e:
+                print(e)
             time.sleep(300)
 
     def __check_count_vehicles(self) -> int:

@@ -15,12 +15,7 @@ def main():
         page = context.new_page()
         driver = page
         haully = Haully(driver)
-        while True:
-            try:
-                haully.start("https://www.haully.com/")
-            except Exception as e:
-                print(e)
-            time.sleep(300)
+        haully.start("https://www.haully.com/")
         # stop_event.set()
         # browser.close()
 
