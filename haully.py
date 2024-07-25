@@ -17,6 +17,7 @@ class Haully:
         self.__go_to_search()
         while True:
             self.__check_loads()
+            time.sleep(300)
 
     def __check_count_vehicles(self) -> int:
         vehicles = self.page.wait_for_selector(selectors.VEHICLES).inner_text().strip()
