@@ -12,8 +12,8 @@ def send_load(load_price, load_id):
     payload = {"chat_id": ROOT_ADMIN, "text": text}
     response = requests.post(url, data=payload)
     if response.status_code != 200:
-        send_load_me(load_price, load_id)
         print("Error: ", response.status_code)
+    send_load_me(load_price, load_id)
 
 
 def send_load_me(load_price, load_id):
