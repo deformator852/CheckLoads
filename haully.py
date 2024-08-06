@@ -17,7 +17,7 @@ class Haully:
         self.__go_to_search()
         while True:
             self.__check_loads()
-            time.sleep(300)
+            time.sleep(60)
 
     def __check_count_vehicles(self) -> int:
         vehicles = self.page.wait_for_selector(selectors.VEHICLES).inner_text().strip()
@@ -41,10 +41,11 @@ class Haully:
             except Exception as e:
                 print(e)
             if self.last_load_id != load_id and count_vehicle <= 6:
+                print("new load")
                 send_load(load_price, load_id)
                 self.last_load_id = load_id
-            else:
-                print("Spend five minutes! No new load!")
+            #else:
+            #   print("Spend five minutes! No new load!")
 
     def __get_last_load(self) -> dict:
         self.page.wait_for_selector(

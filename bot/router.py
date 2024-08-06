@@ -28,7 +28,7 @@ async def get_price(message: types.Message, state: FSMContext):
     if message.from_user.id == ROOT_ADMIN:
         price = message.text
         if price.isdigit():
-            with open("price.json", "w") as file:
+            with open("../price.json", "w") as file:
                 file.write(price)
             await message.answer("Price successfully changed!")
             await state.clear()

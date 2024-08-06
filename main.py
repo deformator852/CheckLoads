@@ -5,9 +5,10 @@ import threading
 import time
 
 def main():
-    stop_event = threading.Event()
+    #stop_event = threading.Event()
 
-    def run_haully(playwright):
+    def run_browser():
+        stop_event = threading.Event()
         browser = playwright.firefox.launch(headless=True)
         context = browser.new_context(
             user_agent=config.USER_AGENT, viewport={"width": 1920, "height": 1080}
@@ -15,14 +16,21 @@ def main():
         page = context.new_page()
         driver = page
         haully = Haully(driver)
+        try:
+            haully.start("https://www.haully.com/")
+        except Exception as e:
+            print(e)
+            stop_event.set()
+            browser.close()
+        
+
+    def run_haully(playwright):
         while True:
             try:
-                haully.start("https://www.haully.com/")
+                run_browser()
             except Exception as e:
-                print(e)
-                time.sleep(120)
-        # stop_event.set()
-        # browser.close()
+                run_browser()
+                time.sleep(180)
 
     with sync_playwright() as playwright:
         run_haully(playwright)
